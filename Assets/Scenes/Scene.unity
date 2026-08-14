@@ -6296,9 +6296,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FrameRenderer
   exportCamera: {fileID: 432368859}
-  renderTex: {fileID: 8400000, guid: b51f3810b587dd64aa27febd4f290c62, type: 2}
+  renderTex: {fileID: 8400000, guid: 16132c84d92251741b70721becb85548, type: 2}
   animationName: Cut In
   framesInAnimation: 154
+  framesPerSecond: 60
 --- !u!114 &4645548252670839739
 MonoBehaviour:
   m_ObjectHideFlags: 0

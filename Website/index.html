@@ -26,10 +26,10 @@
             property="og:title"
             content="Ace Attorney Cut-In Creator"/>
         <!-- Scripts -->
-        <script src="Builds/WebGL/Build/WebGL.loader.js"></script>
         <script type="module" src="selector.js" defer></script>
         <script type="module" src="unitywindow.js" defer></script>
         <script type="module" src="frameRenderer.js" defer></script>
+        <script src="Builds/WebGL/Build/WebGL.loader.js"></script>
         <!-- CSS -->
         <link rel="style.css">
                 
@@ -69,7 +69,7 @@
 
         <!-- Unity Instance -->
         <canvas id="unity-canvas" width=1920 height=1080 style="width:640px;height:360px;background-color:black"></canvas>
-        <script>
+        <script type="module">
             const canvas = document.querySelector("#unity-canvas");
 
             const config = {
@@ -95,25 +95,5 @@
             });
         </script>
         <br/>
-
-        <img id="unityRenderOutput" title="Unity Render" src="" style="display:none; width: 1920px;"/>
-
-        <script>
-            window.addEventListener("UnityImageReceived", function(event) {
-                var blobUrl = event.detail;
-                var imgElement = document.getElementById("unityRenderOutput");
-                
-                // Clean up the previous blob URL if one already exists to free browser memory
-                if (imgElement.src && imgElement.src.startsWith('blob:')) {
-                    URL.revokeObjectURL(imgElement.src);
-                }
-                
-                // Assign the new blob pointer directly to the image source
-                imgElement.src = blobUrl;
-                imgElement.style.display = "block"; 
-                
-                console.log("High-performance image pointer processed!");
-            });
-        </script>
     </body>
 </html>

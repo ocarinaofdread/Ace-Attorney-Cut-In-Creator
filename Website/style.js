@@ -5,12 +5,18 @@ export class Style {
     previewInfo = [];
     renderInfo = [];
 
+    // editor
     previewButton;
     renderButton;
-    exitButton;
     spoilerToggle;
     leftDropdown;
     rightDropdown;
+
+    // preview
+    exitButton;
+
+    // render
+    logCode;
 
     constructor(id){
         this.styleId = id;
@@ -39,10 +45,16 @@ export class Style {
             this.editorInfo.push(this.rightDropdown);
             this.createBreak();
 
-        // [ PREVIEW]
+        // [ PREVIEW ]
             // Exit Button
             this.exitButton = this.createButton('exit', 'Exit');
             this.previewInfo.push(this.exitButton);
+
+        // [ RENDER ]
+            // Log Code
+            this.logCode = document.createElement('code');
+            this.logCode.id = 'log';
+            this.renderInfo.push(this.logCode);
     }
 
     load(){ 
@@ -65,16 +77,22 @@ export class Style {
 
         switch(type){
             case "editor":
+                // @ts-ignore
+                document.querySelector("#style").disabled = false;
                 this.editorInfo.forEach(element => {
                     this.container.appendChild(element);
                 });
                 break;
             case "preview":
+                // @ts-ignore
+                document.querySelector("#style").disabled = true;
                 this.previewInfo.forEach(element => {
                     this.container.appendChild(element);
                 });
                 break;
             case "render":
+                // @ts-ignore
+                document.querySelector("#style").disabled = true;
                 this.renderInfo.forEach(element => {
                     this.container.appendChild(element);
                 });
@@ -167,14 +185,12 @@ export class Style {
                 // Preview Button
                 case 1:
                     // @ts-ignore
-                    document.querySelector("#style").disabled = true;
                     this.changeLayout('preview');
                     break;
 
                 // Render Button
                 case 2:
                     // @ts-ignore
-                    document.querySelector("#style").disabled = true;
                     this.changeLayout('render');
                     break;
             }
@@ -195,7 +211,6 @@ export class Style {
                 // Exit Button
                 case 1:
                     // @ts-ignore
-                    document.querySelector("#style").disabled = false;
                     this.changeLayout('editor');
                     break;
             }

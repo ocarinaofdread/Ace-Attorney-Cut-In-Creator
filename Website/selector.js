@@ -4,7 +4,7 @@ import { AJTDDStyle } from './style_ajtdd.js';
 const AAIC = new AAICStyle;
 const AJTDD = new AJTDDStyle;
 const styles = [ AAIC, AJTDD ];
-var currentStyle;
+var currentStyle ;
 
 const styleDropdown = document.getElementById("style");
 
@@ -31,6 +31,14 @@ window.StyleListener = {
     updateDropdowns : function(options){
         currentStyle.updateDropdown('#leftDropdown', options, true);
         currentStyle.updateDropdown('#rightDropdown', options, true);
+    },
+
+    changeLayout : function(type){
+        currentStyle.changeLayout(type);
+    },
+
+    rendererUpdate : function(updateText){
+        currentStyle.logCode.innerHTML = updateText;
     }
 };
 

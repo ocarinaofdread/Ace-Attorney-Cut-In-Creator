@@ -14,4 +14,26 @@ public class JsonCompiler : MonoBehaviour
 
         return JsonUtility.ToJson(wrapper);
     }
+
+    public class RenderInformationWrapper
+    {
+        public int fps;
+        public int totalFrames;
+        public int width;
+        public int height;
+        public string webpName;
+    }
+    public static string CompileWebpInformation(int fps, int frames, int width, int height, string webpName)
+    {
+        RenderInformationWrapper wrapper = new()
+        {
+            fps = fps,
+            totalFrames = frames,
+            width = width,
+            height = height,
+            webpName = webpName
+        };
+
+        return JsonUtility.ToJson(wrapper);
+    }
 }

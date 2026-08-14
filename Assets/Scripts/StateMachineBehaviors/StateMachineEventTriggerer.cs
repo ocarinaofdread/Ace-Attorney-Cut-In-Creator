@@ -1,14 +1,21 @@
 using UnityEngine;
+using System.Runtime.InteropServices;
 using UnityEngine.Events;
 
 public class StateMachineEventTriggerer : StateMachineBehaviour
 {
+    [DllImport("__Internal")] private static extern void ResetLayoutToEditor();
+
     [SerializeField] private bool onStateEnter = true;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (onStateEnter) animator.GetComponent<EventTriggerer>().TriggerEvent();
+        if (onStateEnter)
+        {
+            animator.GetComponent<EventTriggerer>().TriggerEvent();
+            ResetLayoutToEditor();
+        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

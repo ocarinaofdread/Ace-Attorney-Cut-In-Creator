@@ -8,24 +8,44 @@ mergeInto(LibraryManager.library, {
         var optionsObject = JSON.parse(jsonString);
 
         // @ts-ignore
-        if (window.StyleListener) {
-            // @ts-ignore 
-            window.StyleListener.updateDropdowns(optionsObject.options);
-        } else {
-            console.error("External script not loaded yet!");
-        }
+        window.StyleListener.updateDropdowns(optionsObject.options);
     }, 
 
-    SendImageToJS: function (arrayPtr, arrayLength){
+    BeginRendering: function (informationWrapper){
+        // @ts-ignore
+        var jsonString = UTF8ToString(informationWrapper);
+
+        var informationObject = JSON.parse(jsonString);
+
+        // @ts-ignore
+        console.log("Asking for RenderListener at " + window.RenderListener);
+
+        // @ts-ignore
+        window.RenderListener.beginRendering(informationObject.fps,
+                                             informationObject.totalFrames,
+                                             informationObject.width,
+                                             informationObject.height,
+                                             informationObject.webpName);
+    },
+
+    SendFrameToJS: function (arrayPtr, arrayLength){
         // @ts-ignore
         var rawBytes = new Uint8Array(wasmMemory.buffer, arrayPtr, arrayLength);
 
-        var blob = new Blob([rawBytes], { type: 'image/png'});
-
-        var blobUrl = URL.createObjectURL(blob);
+        console.log("JS received frame. Sending to RenderListener...");
 
         // @ts-ignore
-        window.RenderListener.appendImage(blobUrl);
+        window.RenderListener.addFrame(rawBytes);
+    },
+
+    BeginEncoding : function(){
+        // @ts-ignore
+        window.RenderListener.beginEncoding();
+    },
+
+    ResetLayoutToEditor : function(){
+        // @ts-ignore
+        window.StyleListener.changeLayout('editor');
     }
 
 });
