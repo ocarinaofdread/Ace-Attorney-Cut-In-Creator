@@ -1,10 +1,14 @@
+using System;
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
 using Unity.Collections;
 using UnityEngine;
 
 public class FrameRenderer : MonoBehaviour
 {
+    [DllImport("__Internal")] private static extern void SendImageToJS(IntPtr arrayPointer, int arrayLength);
+
     [SerializeField] private Camera exportCamera;
     [SerializeField] private RenderTexture renderTex;
     [SerializeField] private string animationName;
@@ -47,19 +51,27 @@ public class FrameRenderer : MonoBehaviour
             ProgressBar.percentage = 0;
             ProgressBar.message = "Rendering frames...";
 
-            for (int i = 0; i < framesInAnimation; i++)
-            {
-                // for each frame
-                GoToFrame(i);
-                yield return new WaitForEndOfFrame();
-                exportCamera.targetTexture = renderTex;
-                RenderTexture.active = renderTex;
+            //for (int i = 0; i < framesInAnimation; i++)
+            //{
+            //    // for each frame
+            //    GoToFrame(i);
+            //    yield return new WaitForEndOfFrame();
+            //    exportCamera.targetTexture = renderTex;
+            //    RenderTexture.active = renderTex;
 
-                exportCamera.Render();
-                SaveFrame(i + 1);
+            //    exportCamera.Render();
+            //    SaveFrame(i + 1);
 
-                ProgressBar.percentage = (i + 1) / (framesInAnimation + 0f);
-            }
+            //    ProgressBar.percentage = (i + 1) / (framesInAnimation + 0f);
+            //}
+
+            GoToFrame(100);
+            yield return new WaitForEndOfFrame();
+            exportCamera.targetTexture = renderTex;
+            RenderTexture.active = renderTex;
+
+            exportCamera.Render();
+            SaveFrame(100);
 
             animator.speed = 1;
         }
@@ -73,21 +85,30 @@ public class FrameRenderer : MonoBehaviour
 
         captureTex.Apply();
 
-        //NativeArray<byte> data = captureTex.GetRawTextureData<byte>();
+        byte[] imageBytes = captureTex.EncodeToPNG();
 
-        byte[] png = captureTex.EncodeToPNG();
+        GCHandle handle = GCHandle.Alloc(imageBytes, GCHandleType.Pinned);
+        try
+        {
+            IntPtr pointer = handle.AddrOfPinnedObject();
+            SendImageToJS(pointer, imageBytes.Length);
+        }
+        finally
+        {
+            handle.Free(); // Always free the handle to avoid memory leaks
+        }
 
-        string path = Path.Combine(
-            Application.dataPath, // "...Assets\"
-            "Exports" // "...\Exports\"
-        );
-        DirectoryInfo info = Directory.CreateDirectory(path + "\\" + CutInManager.currentCutInName);
+        //string path = Path.Combine(
+        //    Application.dataPath, // "...Assets\"
+        //    "Exports" // "...\Exports\"
+        //);
+        //DirectoryInfo info = Directory.CreateDirectory(path + "\\" + CutInManager.currentCutInName);
 
-        path = Path.Combine(
-            info.ToString(), // "...Assets\Exports\%CUT_IN_NAME%\"
-            $"frame{frame:D4}.png" // "...\frame000X.png"
-        );
-        File.WriteAllBytes(path, png);
+        //path = Path.Combine(
+        //    info.ToString(), // "...Assets\Exports\%CUT_IN_NAME%\"
+        //    $"frame{frame:D4}.png" // "...\frame000X.png"
+        //);
+        //File.WriteAllBytes(path, png);
 
         RenderTexture.active = null;
     }

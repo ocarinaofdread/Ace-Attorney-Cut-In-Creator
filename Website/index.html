@@ -25,17 +25,95 @@
         <meta
             property="og:title"
             content="Ace Attorney Cut-In Creator"/>
+        <!-- Scripts -->
+        <script src="Builds/WebGL/Build/WebGL.loader.js"></script>
+        <script type="module" src="selector.js" defer></script>
+        <script type="module" src="unitywindow.js" defer></script>
+        <script type="module" src="frameRenderer.js" defer></script>
+        <!-- CSS -->
+        <link rel="style.css">
                 
     </head>
     <!-- Contains ALL PAGE CONTENT -->
     <body>
-        <h2 title="Ace Attorney Cut-In Creator">Ace Attorney Cut-In Creator!</h1>
+        <!-- TITLE -->
+        <h2 title="Ace Attorney Cut-In Creator">Ace Attorney Cut-In Creator</h1>
 
+        <!-- Style Dropdown -->
         <p>
-            Here is an Ace Attorney Cut-In Creator.
-            <br />
-            <br />
-            Brain
+            <label for="style">Style</label><br/>
+            <select name="style" id="style" disabled>
+                <option value="empty">------------</option>
+                <option value="AAIC">Ace Attorney Investigations Collection</option>
+                <option value="PWDS">Phoenix Wright Trilogy (DS)</option>
+                <option value="AJTAJ">Apollo Justice Trilogy (Apollo Justice)</option>
+                <option value="AJTDD">Apollo Justice Trilogy (Dual Destinies)</option>
+                <option value="AJTSOJ">Apollo Justice Trilogy (Spirit of Justice)</option>
+                <option value="TGAAC">The Great Ace Attorney Chronicles</option>
+            </select>
         </p>
+
+        <!-- Screen Size Options -->
+        <div id="size">
+            <label for="size">Size</label><br/>
+                <input checked type="radio" name="size" id="360p" value="360"/>
+                <label for="360p">360p</label>
+                <input type="radio" name="size" id="480p" value="480"/>
+                <label for="480p">480p</label>
+                <input type="radio" name="size" id="720p" value="720"/>
+                <label for="720p">720p</label>
+                <input type="radio" name="size" id="1080p" value="1080"/>
+                <label for="1080p">1080p</label>
+        </div>
+        
+
+        <!-- Unity Instance -->
+        <canvas id="unity-canvas" width=1920 height=1080 style="width:640px;height:360px;background-color:black"></canvas>
+        <script>
+            const canvas = document.querySelector("#unity-canvas");
+
+            const config = {
+                dataUrl: "Builds/WebGL/Build/WebGL.data",
+                frameworkUrl: "Builds/WebGL/Build/WebGL.framework.js",
+                codeUrl: "Builds/WebGL/Build/WebGL.wasm",
+                streamingAssetsUrl: "StreamingAssets",
+                companyName: "ocarinaofdread",
+                productName: "Ace Attorney Cut-In Creator",
+                productVersion: "1.0",
+            };
+
+            window.gameInstance = null;
+
+            createUnityInstance(canvas, config, (progress) => {
+                console.log("Loading progress: " + (100 * progress) + "%");
+            }).then((unityInstance) => {
+                window.gameInstance = unityInstance;
+                document.querySelector("#style").disabled = false;
+                console.log("Unity instance successfully created!");
+            }).catch((message) => {
+                alert("Unity instance failed to load: " + message);
+            });
+        </script>
+        <br/>
+
+        <img id="unityRenderOutput" title="Unity Render" src="" style="display:none; width: 1920px;"/>
+
+        <script>
+            window.addEventListener("UnityImageReceived", function(event) {
+                var blobUrl = event.detail;
+                var imgElement = document.getElementById("unityRenderOutput");
+                
+                // Clean up the previous blob URL if one already exists to free browser memory
+                if (imgElement.src && imgElement.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(imgElement.src);
+                }
+                
+                // Assign the new blob pointer directly to the image source
+                imgElement.src = blobUrl;
+                imgElement.style.display = "block"; 
+                
+                console.log("High-performance image pointer processed!");
+            });
+        </script>
     </body>
 </html>

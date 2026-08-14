@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "wasm-webp": "^0.1.0"
+  }
+}

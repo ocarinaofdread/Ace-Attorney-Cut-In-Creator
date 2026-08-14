@@ -1,12 +1,18 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Runtime.InteropServices;
+using UnityEngine.Events;
+
+[Serializable]
+public class BooleanEvent : UnityEvent<bool> { }
 
 public class CutInManager : MonoBehaviour
 {
-    [HideInInspector] public static string currentCutInName;
+    [DllImport("__Internal")] private static extern void UpdateDropdowns(string jsonString);
+
+    public static string currentCutInName;
 
     [Header("Cut-In Objects")]
     [SerializeField] private SpriteRenderer leftCutIn;
@@ -26,8 +32,11 @@ public class CutInManager : MonoBehaviour
     [SerializeField] private Animator previewAnimator;
     [SerializeField] private Animator renderAnimator;
 
+    [Header("Events")]
+    [SerializeField] private List<UnityEvent> normalEvents = new();
+    [SerializeField] private List<BooleanEvent> boolEvents = new();
+
     [Header("Testing")]
-    [SerializeField] private bool activeAtStart = true;
     [SerializeField] private TMP_Dropdown leftDropdown;
     [SerializeField] private TMP_Dropdown rightDropdown;
 
@@ -55,13 +64,12 @@ public class CutInManager : MonoBehaviour
         // Sets initial state to be non-spoilers
         currentSprites = nonSpoilerSprites;
         currentSpriteNames = nonSpoilerSpriteNames;
+    }
 
-        // If Active At Start 
-        if (activeAtStart)
-        {
-            ApplyThisDropdown();
-            UpdateCutInName();
-        }
+    private void OnEnable()
+    {
+        ApplyThisDropdown();
+        UpdateCutInName();
     }
 
     /*
@@ -72,15 +80,15 @@ public class CutInManager : MonoBehaviour
         UpdateDropdownItems(currentSpriteNames);
     }
 
-    public void ToggleSpoilers(bool spoilersOn)
+    public void ToggleSpoilers(int spoilersOn)
     {
         switch (spoilersOn)
         {
-            case true:
+            case 1:
                 currentSpriteNames = allSpriteNames;
                 currentSprites = allSprites;
                 break;
-            case false:
+            case 0:
                 currentSpriteNames = nonSpoilerSpriteNames;
                 currentSprites = nonSpoilerSprites;
                 break;
@@ -89,9 +97,35 @@ public class CutInManager : MonoBehaviour
         UpdateDropdownItems(currentSpriteNames);
     }
 
+    public void ChangeRightCutIn(string name)
+    {
+        for (int i = 0; i < currentSprites.Count; i++)
+        {
+            if (currentSprites[i].name == name)
+            {
+                rightCutIn.sprite = currentSprites[i];
+            }
+        }
+        
+        UpdateCutInName();
+    }
+
     public void ChangeRightCutIn(int index)
     {
         rightCutIn.sprite = currentSprites[index];
+        UpdateCutInName();
+    }
+
+    public void ChangeLeftCutIn(string name)
+    {
+        for (int i = 0; i < currentSprites.Count; i++)
+        {
+            if (currentSprites[i].name == name)
+            {
+                leftCutIn.sprite = currentSprites[i];
+            }
+        }
+
         UpdateCutInName();
     }
 
@@ -106,19 +140,31 @@ public class CutInManager : MonoBehaviour
         previewAnimator.SetTrigger(cutInHash);
     }
 
+    public void CallNormalEvent(int index)
+    {
+        normalEvents[index].Invoke();
+    }
+    
+    public void CallBooleanEvent(string code)
+    {
+        int eventIndex = int.Parse(code.Substring(0, 1));
+
+        int boolInt = int.Parse(code.Substring(2, 1));
+        bool value = false;
+        if (boolInt == 1) { value = true; }
+
+        boolEvents[eventIndex].Invoke(value);
+    }
+
     /*
      *  PRIVATE METHODS
      */
     private void UpdateDropdownItems(List<string> names)
     {
-        leftDropdown.ClearOptions();
-        rightDropdown.ClearOptions();
+        ChangeRightCutIn(currentSpriteNames[0]);
+        ChangeLeftCutIn(currentSpriteNames[0]);
 
-        leftDropdown.AddOptions(names);
-        rightDropdown.AddOptions(names);
-
-        ChangeRightCutIn(0);
-        ChangeLeftCutIn(0);
+        UpdateDropdowns(JsonCompiler.CompileDropdownOptions(names));
     }
 
     private void UpdateCutInName()

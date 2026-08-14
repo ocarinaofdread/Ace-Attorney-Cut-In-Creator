@@ -5101,6 +5101,33 @@ async function createWasm() {
   		Module.WebPlayer.PlayerIsInitialized();
   	}
 
+  function _SendImageToJS(arrayPtr, arrayLength){
+          // @ts-ignore
+          var rawBytes = new Uint8Array(wasmMemory.buffer, arrayPtr, arrayLength);
+  
+          var blob = new Blob([rawBytes], { type: 'image/png'});
+  
+          var blobUrl = URL.createObjectURL(blob);
+  
+          // @ts-ignore
+          window.RenderListener.appendImage(blobUrl);
+      }
+
+  function _UpdateDropdowns(optionsWrapper) {
+          // @ts-ignore
+          var jsonString = UTF8ToString(optionsWrapper);
+  
+          var optionsObject = JSON.parse(jsonString);
+  
+          // @ts-ignore
+          if (window.StyleListener) {
+              // @ts-ignore 
+              window.StyleListener.updateDropdowns(optionsObject.options);
+          } else {
+              console.error("External script not loaded yet!");
+          }
+      }
+
   var ___assert_fail = (condition, filename, line, func) =>
       abort(`Assertion failed: ${UTF8ToString(condition)}, at: ` + [filename ? UTF8ToString(filename) : 'unknown filename', line, func ? UTF8ToString(func) : 'unknown function']);
 
@@ -17062,6 +17089,10 @@ var wasmImports = {
   JS_WebGPU_Setup: _JS_WebGPU_Setup,
   /** @export */
   JS_WebPlayer_FinishInitialization: _JS_WebPlayer_FinishInitialization,
+  /** @export */
+  SendImageToJS: _SendImageToJS,
+  /** @export */
+  UpdateDropdowns: _UpdateDropdowns,
   /** @export */
   __assert_fail: ___assert_fail,
   /** @export */
