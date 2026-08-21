@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c0ba26938abef4eb0c2d2439d363b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  onStateEnter: 1
+  onStateEnter: 0
 --- !u!1101 &-4406828134817968349
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

@@ -1,9 +1,9 @@
-// @ts-ignore
-import createWebP from './node_modules/webp-wasm/dist/esm/webp-wasm.js'
+import { FFmpeg } from './node_modules/@ffmpeg/ffmpeg/dist/esm/index.js';
+import { toBlobURL } from './node_modules/@ffmpeg/util/dist/esm/index.js';
 
 const waitToReturn = 3000;
 
-var framesArray ;
+var framesArray;
 var currentDuration;
 var currentTotalFrames;
 var currentWidth;
@@ -14,7 +14,32 @@ var frameIndex;
 var logInformation;
 
 // @ts-ignore
-const webpModule = await createWebP();
+const ffmpeg = new FFmpeg();
+var ffmpegLoaded = false;
+
+async function loadFFmpeg(){
+    if (ffmpegLoaded){
+        return;
+    }
+
+    const baseURL =
+        window.location.origin +
+        '/Website/ffmpeg';
+    await ffmpeg.load({
+        coreURL: await toBlobURL(
+            `${baseURL}/ffmpeg-core.js`,
+            'text/javascript'
+        ),
+        wasmURL: await toBlobURL(
+            `${baseURL}/ffmpeg-core.wasm`,
+            'application/wasm'
+        )
+    });
+
+    console.log("FFmpeg loaded!");
+
+    ffmpegLoaded = true;
+}
 
 // @ts-ignore
 window.RenderListener = {
@@ -28,43 +53,56 @@ window.RenderListener = {
         document.body.append(image);
     },
 
-    beginRendering: function(fps, totalFrames, width, height, webpName){
+    beginRendering: async function(fps, totalFrames, width, height, webpName){
+        logInformation = [];
+        logInformation[0] = "Loading FFMPEG...";
+        // @ts-ignore
+        window.StyleListener.rendererUpdate(getLogText());
+        
+        await loadFFmpeg();
 
         framesArray = [];
-        logInformation = ["", "", ""];
-
-
         currentTotalFrames = totalFrames;
         currentDuration = 1000/fps; // duration in ms
         currentWidth = width;
         currentHeight = height;
         currentWebpName = webpName;
-
         frameIndex = 0;
-        logInformation[0] = "Rendering frames... (0/" + currentTotalFrames + ")";
-        
+
+        logInformation[1] = "Rendering frames... (0/" + currentTotalFrames + ")";
         // @ts-ignore
         window.StyleListener.rendererUpdate(getLogText());
+
+        // @ts-ignore
+        window.gameInstance.SendMessage("AAIC/Render", "Render");
     },
 
-    addFrame : function(bytes){
-        const config = {
-            lossless: 0,
-            quality: 80,
-            method: 4
+    addFrame : async function(bytes){
+        const frame = new Uint8Array(bytes);
+
+        console.log(
+            "Frame",
+            frameIndex + 1,
+            "length:",
+            frame.length,
+            "first bytes:",
+            frame.slice(0, 20)
+        );
+
+        let min = 255;
+        let max = 0;
+
+        for (let i = 0; i < frame.length; i++) {
+            if (frame[i] < min) min = frame[i];
+            if (frame[i] > max) max = frame[i];
         }
 
-        const newFrame = {
-            data: bytes.slice(),
-            duration: currentDuration,
-            has_config: true,
-            config: config
-        }
-
-        framesArray.push(newFrame);
+        console.log( "Frame", frameIndex + 1, "min:", min, "max:", max);
 
         frameIndex++;
-        logInformation[0] = "Rendering frames... (" + frameIndex + 
+        framesArray.push(frame);
+
+        logInformation[1] = "Rendering frames... (" + frameIndex + 
                   "/" + currentTotalFrames + ")";
         console.log("FrameRenderer Received Frame " + frameIndex +
                     ". Calling GetNextFrame()");
@@ -77,44 +115,80 @@ window.RenderListener = {
     },
 
     beginEncoding: async function(){
-        logInformation[1] = "Rendering .webp...";
+        logInformation[2] = "Rendering .webp...";
         // @ts-ignore
         window.StyleListener.rendererUpdate(getLogText());
 
         console.log("Begin webp encode");
 
-        setTimeout(async function webpEncode() {
+        const frameSize = currentWidth * currentHeight * 4;
+        const rawVideo = new Uint8Array(frameSize * framesArray.length);
+
+        for (let i = 0; i < framesArray.length; i++) {
+            rawVideo.set(
+                framesArray[i],
+                i * frameSize
+            );
+        }
+
+        await ffmpeg.writeFile(
+            'frames.rgba',
+            rawVideo
+        );
+
+        await ffmpeg.exec([
+            '-f', 'rawvideo',
+            '-pix_fmt', 'rgba',
+            '-s', `${currentWidth}x${currentHeight}`,
+            '-r', `${1000 / currentDuration}`,
+            '-i', 'frames.rgba',
+            '-vf', 'vflip',
+
+            '-c:v', 'libwebp',
+            '-lossless', '0',
+            '-q:v', '80',
+
+            '-loop', '1',
+            'output.webp'
+        ]);
+
+        logInformation[3] = "Downloading .webp...";
+        // @ts-ignore
+        window.StyleListener.rendererUpdate(getLogText());
+
+        console.log("Begin webp download");
+
+        const data = await ffmpeg.readFile('output.webp');
+        // @ts-ignore
+        const blob = new Blob([data.buffer], { type: "image/webp" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = currentWebpName;
+        a.click();
+
+        URL.revokeObjectURL(url);
+
+        logInformation[4] = "Downloaded .webp!";
+        // @ts-ignore
+        window.StyleListener.rendererUpdate(getLogText());
+
+        setTimeout(async function reset() {
+            framesArray = [];
+            logInformation = [];
+
+            try {
+                await ffmpeg.deleteFile('frames.rgba');
+            } catch {}
+
+            try {
+                await ffmpeg.deleteFile('output.webp');
+            } catch {}
+
             // @ts-ignore
-            const webpData = await webpModule.encodeAnimation(currentWidth, currentHeight, true, framesArray);
-
-            logInformation[2] = "Downloading .webp...";
-            // @ts-ignore
-            window.StyleListener.rendererUpdate(getLogText());
-
-            // console.log("Download .webp!");
-
-            // @ts-ignore
-            const blob = new Blob([webpData], { type: "image/webp" });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = currentWebpName;
-            a.click();
-
-            URL.revokeObjectURL(url);
-
-            logInformation[3] = "Downloaded .webp!";
-            // @ts-ignore
-            window.StyleListener.rendererUpdate(getLogText());
-
-            setTimeout(() => {
-                framesArray = [];
-                logInformation = [];
-                // @ts-ignore
-                window.StyleListener.changeLayout('editor');
-            }, waitToReturn);
-        }, 2000);
+            window.StyleListener.changeLayout('editor');
+        }, waitToReturn);
     }
 };
 

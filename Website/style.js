@@ -6,11 +6,16 @@ export class Style {
     renderInfo = [];
 
     // editor
+    sizeRadio;
+    fpsRadio;
     previewButton;
     renderButton;
     spoilerToggle;
     leftDropdown;
     rightDropdown;
+    leftImageLoader;
+    rightImageLoader;
+    templateDownloadButton;
 
     // preview
     exitButton;
@@ -18,10 +23,18 @@ export class Style {
     // render
     logCode;
 
-    constructor(id){
+    constructor(id, sizes, fps){
         this.styleId = id;
 
-        // [ EDITOR ]
+        //#region [ EDITOR ]
+            // Size Radio
+            this.sizeRadio = this.createRadio('size', sizes);
+            this.editorInfo.push(this.sizeRadio);
+
+            // FPS Radio
+            this.fpsRadio = this.createRadio('fps', fps);
+            this.editorInfo.push(this.fpsRadio);
+
             // Preview Button
             this.previewButton = this.createButton('preview', 'Preview');
             this.editorInfo.push(this.previewButton);
@@ -45,16 +58,32 @@ export class Style {
             this.editorInfo.push(this.rightDropdown);
             this.createBreak();
 
-        // [ PREVIEW ]
+            // Left Image Loader
+            this.leftImageLoader = this.createUpload('leftUpload', 'Upload Cut-In', ".png");
+            this.editorInfo.push(this.leftImageLoader);
+
+            // Right Image Loader
+            this.rightImageLoader = this.createUpload('rightUpload', 'Upload Cut-In', ".png");
+            this.editorInfo.push(this.rightImageLoader);
+
+            // Template Download Button
+            this.templateDownloadButton = this.createButton('tempDL', 'Template');
+            this.editorInfo.push(this.templateDownloadButton);
+            this.createBreak();
+        //#endregion
+
+        //#region [ PREVIEW ]
             // Exit Button
             this.exitButton = this.createButton('exit', 'Exit');
             this.previewInfo.push(this.exitButton);
+        //#endregion
 
-        // [ RENDER ]
+        //#region [ RENDER ]
             // Log Code
             this.logCode = document.createElement('code');
             this.logCode.id = 'log';
             this.renderInfo.push(this.logCode);
+        //#endregion
     }
 
     load(){ 
@@ -147,6 +176,40 @@ export class Style {
             toggle.id = id;
             return toggle;
         }
+
+        createUpload(id, text, filetype){
+            var uploader = document.createElement('input');
+            uploader.id = id;
+            uploader.type = 'file';
+            uploader.textContent = text;
+            uploader.accept = filetype;
+            uploader.multiple = false;
+
+            return uploader;
+        }
+
+        createRadio(id, options){
+            const radioDiv = document.createElement('div');
+            radioDiv.id = id;
+
+            for (var i = 0; i < options.length; i++){
+                console.log("options[" + i + "] = " + options[i]);
+                var radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = id;
+                radio.id = options[i];
+                radio.value = options[i];
+                if (i==0) radio.checked = true;
+                radioDiv.appendChild(radio);
+
+                var label = document.createElement('label');
+                label.htmlFor = options[i];
+                label.textContent = options[i];
+                radioDiv.appendChild(label);
+            }
+
+            return radioDiv;
+        }
     //#endregion
 
     //#region Element Updaters
@@ -170,7 +233,7 @@ export class Style {
 
     //#endregion
 
-    //#region Unity Event Creators
+    //#region Event Creators
     
         //#region Button
     addUnityFunction(element, eventType, gameObject, method, extraFunction){
@@ -214,6 +277,22 @@ export class Style {
                     this.changeLayout('editor');
                     break;
             }
+        }
+
+        element.addEventListener(eventType, onEvent);
+    }
+
+    addDownloadFunction(element, eventType, href, filename){
+        const onEvent = () => {
+            console.log(href + " downloaded with element " + element.type 
+                        + " with id " + element.id);
+
+            const link = document.createElement('a');
+            link.href = href;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         element.addEventListener(eventType, onEvent);
@@ -264,6 +343,74 @@ export class Style {
         }
 
         element.addEventListener(eventType, onEvent);
+    }
+        //#endregion
+
+        //#region Radio
+    addUnityFunctionByRadioValue(element, eventType, gameObject, method){
+        const radios = [];
+        for (var i = 0; i < element.childNodes.length; i++){
+            if (element.childNodes[i].type == 'radio'){
+                radios.push(element.childNodes[i]);
+            }
+        }
+
+        const onEvent = (event) => {
+            var checked = event.target.checked;
+
+            if (checked){
+                console.log(method + " called with element " + event.target.type 
+                        + " with id " + event.target.id + ". checked: " + checked);
+
+                // @ts-ignore
+                window.gameInstance.SendMessage(gameObject, method, event.target.value);
+            }
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener(eventType, onEvent);
+        })
+    }
+        //#endregion
+
+        //#region Upload
+    addUnityFunctionByFileInput(element, eventType, gameObject, method){
+        const onEvent = (event) => {
+            console.log(method + " called with element " + element.type 
+                        + " with id " + element.id);
+
+            var files = event.target.files;
+            console.log("files retrieved");
+
+            var img = files[0];
+            console.log("img retrieved?");
+
+            if (img){
+                const reader = new FileReader();
+                console.log("FileReader instantiated");
+
+                reader.onload = function(e){
+                    const base64String = (e.target.result).slice(22);
+                    console.log(base64String.slice(0, 20) + "...");
+
+                    // @ts-ignore
+                    window.gameInstance.SendMessage(gameObject, method, base64String);    
+                }
+
+                reader.readAsDataURL(img);
+            }
+            else {
+                console.log("no image");
+            }
+        }
+
+        element.addEventListener(eventType, onEvent);
+    }
+
+    addUploadClearFunction(element, eventType){
+        element.addEventListener(eventType, () => {
+            element.value = ''; 
+        });
     }
         //#endregion
     //#endregion

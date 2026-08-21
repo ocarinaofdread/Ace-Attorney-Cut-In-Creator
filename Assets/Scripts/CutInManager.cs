@@ -28,6 +28,11 @@ public class CutInManager : MonoBehaviour
     private List<Sprite> currentSprites = new();
     private List<string> currentSpriteNames = new();
 
+    private string leftCutInName;
+    private string rightCutInName;
+    private Sprite leftCustomSprite;
+    private Sprite rightCustomSprite;
+
     [Header("Animators")]
     [SerializeField] private Animator previewAnimator;
     [SerializeField] private Animator renderAnimator;
@@ -106,13 +111,29 @@ public class CutInManager : MonoBehaviour
                 rightCutIn.sprite = currentSprites[i];
             }
         }
-        
+
+        rightCutInName = rightCutIn.sprite.name;
         UpdateCutInName();
     }
 
     public void ChangeRightCutIn(int index)
     {
         rightCutIn.sprite = currentSprites[index];
+
+        rightCutInName = rightCutIn.sprite.name;
+        UpdateCutInName();
+    }
+
+    public void ChangeRightCutIn(Texture2D tex)
+    {
+        if (rightCustomSprite) { Destroy(rightCustomSprite); }
+
+        Rect rect = new Rect(0, 0, tex.width, tex.height);
+        Vector2 pivot = new(0.5f, 0.5f);
+        rightCustomSprite = Sprite.Create(tex, rect, pivot);
+        rightCutIn.sprite = rightCustomSprite;
+
+        rightCutInName = "Custom";
         UpdateCutInName();
     }
 
@@ -126,12 +147,28 @@ public class CutInManager : MonoBehaviour
             }
         }
 
+        leftCutInName = leftCutIn.sprite.name;
         UpdateCutInName();
     }
 
     public void ChangeLeftCutIn(int index)
     {
         leftCutIn.sprite = currentSprites[index];
+
+        leftCutInName = leftCutIn.sprite.name;
+        UpdateCutInName();
+    }
+
+    public void ChangeLeftCutIn(Texture2D tex)
+    {
+        if (leftCustomSprite) { Destroy(leftCustomSprite); }
+
+        Rect rect = new Rect(0, 0, tex.width, tex.height);
+        Vector2 pivot = new(0.5f, 0.5f);
+        leftCustomSprite = Sprite.Create(tex, rect, pivot);
+        leftCutIn.sprite = leftCustomSprite;
+
+        leftCutInName = "Custom";
         UpdateCutInName();
     }
 
@@ -171,9 +208,9 @@ public class CutInManager : MonoBehaviour
     {
         string cutInName = "";
 
-        cutInName += leftCutIn.sprite.name;
+        cutInName += leftCutInName;
         cutInName += "_VS_";
-        cutInName += rightCutIn.sprite.name;
+        cutInName += rightCutInName;
 
         currentCutInName = cutInName;
     }
