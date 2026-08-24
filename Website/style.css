@@ -1,0 +1,91 @@
+@font-face {
+    font-family: SNPro;
+    src: url('./fonts/SNPro-Regular.ttf');
+}
+
+@font-face {
+    font-family: DFYeaSong;
+    src:url('./fonts/DFYeaSong-W9-WINP-BF-01.ttf');
+}
+
+html {
+    background-image: url("./images/bg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+h2 {
+    font-size: 45px;
+    font-family: DFYeaSong;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+body {
+    color: white;
+    display: flex;
+    font-family: SNPro;
+    flex-direction: column;
+    place-items: center;
+}
+
+select {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+canvas {
+    width:640px;
+    height:360px;
+    background-color:black;
+}
+
+settings {
+    padding: 15px;
+    line-height: 25px;
+    font-family: SNPro;
+    background-color: #314778;
+    color: white;
+    width: 500px;
+    height: 300px;
+}
+
+settings button {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: black;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px 10px 20px;
+}
+
+settings select {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #16264a;
+    color: white;
+    padding: 5px;
+    font-size: 14px;
+    outline-color: black;
+}
+
+settings code {
+    display: block;
+    padding: 15px;
+    line-height: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: black;
+    color: white;
+}
+
+settings input[type='file'] {
+    background-color: #16264a;
+    font-family: SNPro;
+    width: 250px;
+}
+
+#tempDL {
+    all: revert;
+    display: block;
+    margin: 0 auto;
+}

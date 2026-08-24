@@ -1,6 +1,6 @@
 export class Style {
     styleId = "";
-    container = document.createElement('p');
+    container = document.createElement('settings');
     editorInfo = [];
     previewInfo = [];
     renderInfo = [];
@@ -42,7 +42,7 @@ export class Style {
             // Render Button
             this.renderButton = this.createButton('render', 'Render');
             this.editorInfo.push(this.renderButton);
-            this.createBreak();
+            this.createBreak(); this.createBreak();
 
             // Spoiler Sprites Toggle
             this.spoilerToggle = this.createToggle('spoiler', 'Spoiler Sprites', false);
@@ -65,9 +65,10 @@ export class Style {
             // Right Image Loader
             this.rightImageLoader = this.createUpload('rightUpload', 'Upload Cut-In', ".png");
             this.editorInfo.push(this.rightImageLoader);
+            this.createBreak();
 
             // Template Download Button
-            this.templateDownloadButton = this.createButton('tempDL', 'Template');
+            this.templateDownloadButton = this.createButton('tempDL', 'Cut-In Template (.psd)');
             this.editorInfo.push(this.templateDownloadButton);
             this.createBreak();
         //#endregion
