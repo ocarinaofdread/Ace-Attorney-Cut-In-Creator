@@ -22,16 +22,13 @@ async function loadFFmpeg(){
         return;
     }
 
-    const baseURL =
-        window.location.origin +
-        '/docs/ffmpeg';
-    await ffmpeg.load({
+   await ffmpeg.load({
         coreURL: await toBlobURL(
-            `${baseURL}/ffmpeg-core.js`,
+            `./ffmpeg/ffmpeg-core.js`,
             'text/javascript'
         ),
         wasmURL: await toBlobURL(
-            `${baseURL}/ffmpeg-core.wasm`,
+            `./ffmpeg/ffmpeg-core.wasm`,
             'application/wasm'
         )
     });
