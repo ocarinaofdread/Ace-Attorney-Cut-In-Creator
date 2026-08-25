@@ -1,15 +1,15 @@
 @font-face {
     font-family: SNPro;
-    src: url('../fonts/SNPro-Regular.ttf');
+    src: url('./fonts/SNPro-Regular.ttf');
 }
 
 @font-face {
     font-family: DFYeaSong;
-    src:url('../fonts/DFYeaSong-W9-WINP-BF-01.ttf');
+    src:url('./fonts/DFYeaSong-W9-WINP-BF-01.ttf');
 }
 
 html {
-    background-image: url("../images/bg.png");
+    background-image: url("./images/bg.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
