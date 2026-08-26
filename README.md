@@ -11,7 +11,7 @@ A web tool developed by ocarinaofdread.
        - Note: Your custom cut-in will disappear upon selecting a preset cut-in from the dropdown. If needed, you may download the cut-in template for reference.
 5. Each style has its own custom properties that you can mess with, located below the Template button.
 6. Select either **'Preview'** to preview the animation in your browser, or **'Render'** to render the animation!
-   - Note: Loading ffmpeg and rendering the .webp may take a decent bit of time, depending on your browser, device, and internet speeds. Please be patient!
+   - Note: Loading ffmpeg and rendering the .webp may take a decent bit of time, depending on your browser, device, and internet speeds. Please be patient.
 
 ## Credits
 - Thanks to Aura for ripping the Investigations Collection template.
