@@ -14,7 +14,10 @@ A web tool developed by ocarinaofdread.
    - Note: Loading ffmpeg and rendering the .webp may take a decent bit of time, depending on your browser, device, and internet speeds. Please be patient.
 
 ## Credits
+- Thanks to CAPCOM and any team members responsible for the Ace Attorney series.
 - Thanks to Aura for ripping the Investigations Collection template.
 - Thanks to Tox for ripping the Investigations Collection cut-ins.
 
 This is not in any way affiliated with CAPCOM. All rights go to their respective owners.
+
+Please feel free to report any issues on the [Issues page](https://github.com/ocarinaofdread/Ace-Attorney-Cut-In-Creator/issues).
