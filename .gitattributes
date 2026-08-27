@@ -126,7 +126,6 @@ Packages/packages-lock.json linguist-generated
 *.hdr                   lfs
 *.iff                   lfs
 *.pict                  lfs
-*.psd                   lfs
 *.tga                   lfs
 *.tif                   lfs
 *.tiff                  lfs
