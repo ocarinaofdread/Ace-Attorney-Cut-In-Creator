@@ -35,50 +35,6 @@
     </head>
     <!-- Contains ALL PAGE CONTENT -->
     <body>
-        <!-- TITLE -->
-        <h2 title="Ace Attorney Cut-In Creator">Ace Attorney Cut-In Creator</h1>
-
-        <!-- Style Dropdown -->
-        <p>
-            <label for="style">Style</label><br/>
-            <select name="style" id="style" disabled>
-                <option value="empty">------------</option>
-                <option value="AAIC">Ace Attorney Investigations Collection</option>
-                <!-- <option value="PWDS">Phoenix Wright Trilogy (DS)</option>
-                <option value="AJTAJ">Apollo Justice Trilogy (Apollo Justice)</option>
-                <option value="AJTDD">Apollo Justice Trilogy (Dual Destinies)</option>
-                <option value="AJTSOJ">Apollo Justice Trilogy (Spirit of Justice)</option>
-                <option value="TGAAC">The Great Ace Attorney Chronicles</option> -->
-            </select>
-        </p>
-
-        <!-- Unity Instance -->
-        <canvas id="unity-canvas" width=1920 height=1080></canvas>
-        <script type="module">
-            const canvas = document.querySelector("#unity-canvas");
-
-            const config = {
-                dataUrl: "Builds/WebGL/Build/WebGL.data",
-                frameworkUrl: "Builds/WebGL/Build/WebGL.framework.js",
-                codeUrl: "Builds/WebGL/Build/WebGL.wasm",
-                streamingAssetsUrl: "StreamingAssets",
-                companyName: "ocarinaofdread",
-                productName: "Ace Attorney Cut-In Creator",
-                productVersion: "1.0",
-            };
-
-            window.gameInstance = null;
-
-            createUnityInstance(canvas, config, (progress) => {
-                console.log("Loading progress: " + (100 * progress) + "%");
-            }).then((unityInstance) => {
-                window.gameInstance = unityInstance;
-                document.querySelector("#style").disabled = false;
-                console.log("Unity instance successfully created!");
-            }).catch((message) => {
-                alert("Unity instance failed to load: " + message);
-            });
-        </script>
-        <br/>
+        <h2 title="Ace Attorney Cut-In Creator">This site is currently under maintenance. I apologize for the inconvenience!</h2>
     </body>
 </html>
