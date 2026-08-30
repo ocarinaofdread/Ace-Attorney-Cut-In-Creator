@@ -77,6 +77,28 @@ window.RenderListener = {
     addFrame : async function(bytes){
         const frame = new Uint8Array(bytes);
 
+        // if (frameIndex >= 100){
+        //     const canvas = document.createElement("canvas");
+        //     canvas.width = currentWidth;
+        //     canvas.height = currentHeight;
+
+        //     const ctx = canvas.getContext("2d");
+        //     const imageData = new ImageData(
+        //         new Uint8ClampedArray(frame),
+        //         currentWidth,
+        //         currentHeight
+        //     );
+
+        //     ctx.putImageData(imageData, 0, 0);
+
+        //     const blob = await new Promise(resolve =>
+        //         canvas.toBlob(resolve, "image/png")
+        //     );
+
+        //     const blobUrl = URL.createObjectURL(blob);
+        //     RenderListener.appendImage(blobUrl);
+        // }
+
         console.log(
             "Frame",
             frameIndex + 1,
@@ -98,6 +120,8 @@ window.RenderListener = {
 
         frameIndex++;
         framesArray.push(frame);
+        var image = document.createElement('img');
+        document.body.append(image);
 
         logInformation[1] = "Rendering frames... (" + frameIndex + 
                   "/" + currentTotalFrames + ")";
@@ -131,6 +155,7 @@ window.RenderListener = {
         await ffmpeg.writeFile(
             'frames.rgba',
             rawVideo
+            // framesArray[framesArray.length - 1]
         );
 
         await ffmpeg.exec([
@@ -141,7 +166,8 @@ window.RenderListener = {
             '-i', 'frames.rgba',
             '-vf', 'vflip',
 
-            '-c:v', 'libwebp',
+            '-c:v', 'libwebp_anim',
+            // '-pix_fmt', 'yuva444p',
             '-lossless', '0',
             '-q:v', '80',
 
