@@ -2,8 +2,8 @@ import { AAICStyle } from './style_aaic.js';
 import { AJTDDStyle } from './style_ajtdd.js';
 
 const AAIC = new AAICStyle;
-// const AJTDD = new AJTDDStyle;
-const styles = [ AAIC ];
+const AJTDD = new AJTDDStyle;
+const styles = [ AAIC, AJTDD ];
 var currentStyle ;
 
 const styleDropdown = document.getElementById("style");
@@ -18,8 +18,8 @@ const onStyleChange = () => {
             AAIC.load();
             break;
         case "AJTDD":
-            // currentStyle = AJTDD;
-            // AJTDD.load();
+            currentStyle = AJTDD;
+            AJTDD.load();
             break;
     }
 }
@@ -39,6 +39,10 @@ window.StyleListener = {
 
     rendererUpdate : function(updateText){
         currentStyle.logCode.innerHTML = updateText;
+    },
+
+    getCurrentStyleId : function(){
+        return currentStyle.styleId;
     }
 };
 

@@ -66,12 +66,12 @@ window.RenderListener = {
         currentWebpName = webpName;
         frameIndex = 0;
 
-        logInformation[1] = "Rendering frames... (0/" + currentTotalFrames + ")";
+        logInformation[1] = "Rendering frames... (0/" + Math.round(currentTotalFrames) + ")";
         // @ts-ignore
         window.StyleListener.rendererUpdate(getLogText());
 
         // @ts-ignore
-        window.gameInstance.SendMessage("AAIC/Render", "Render");
+        window.gameInstance.SendMessage(window.StyleListener.getCurrentStyleId() + '/Render', "Render");
     },
 
     addFrame : async function(bytes){
@@ -124,7 +124,7 @@ window.RenderListener = {
         document.body.append(image);
 
         logInformation[1] = "Rendering frames... (" + frameIndex + 
-                  "/" + currentTotalFrames + ")";
+                  "/" + Math.round(currentTotalFrames) + ")";
         console.log("FrameRenderer Received Frame " + frameIndex +
                     ". Calling GetNextFrame()");
         
@@ -132,7 +132,7 @@ window.RenderListener = {
         window.StyleListener.rendererUpdate(getLogText());
 
         // @ts-ignore
-        window.gameInstance.SendMessage('AAIC/Render', 'GetNextFrame');
+        window.gameInstance.SendMessage(window.StyleListener.getCurrentStyleId() + '/Render', 'GetNextFrame');
     },
 
     beginEncoding: async function(){
