@@ -18,6 +18,6 @@ A web tool developed by ocarinaofdread.
 - Thanks to Aura for ripping the Investigations Collection template.
 - Thanks to Tox for ripping the Investigations Collection cut-ins.
 
-This is not in any way affiliated with CAPCOM. All rights go to their respective owners.
+This is not in any way affiliated with CAPCOM. The rights of Ace Attorney, its characters, art, music, and sound effects all go to their respective owners.
 
 Please feel free to report any issues on the [Issues page](https://github.com/ocarinaofdread/Ace-Attorney-Cut-In-Creator/issues).
