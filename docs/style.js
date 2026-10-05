@@ -91,7 +91,7 @@ export class Style {
         this.editorInfo.forEach(element => {
             this.container.appendChild(element);
         });
-        document.body.append(this.container);
+        document.querySelector('settings-container').append(this.container);
 
         // @ts-ignore
         window.gameInstance.SendMessage('JS-Loader', 'SwitchStyle', this.styleId);
@@ -146,7 +146,7 @@ export class Style {
         createDropdown(id){
             var dropdown = document.createElement('select');
             dropdown.id = id;
-            dropdown.style.width = "250px";
+            // dropdown.style.width = "250px";
 
             var options = [
                 { value: '1', text: '1'},

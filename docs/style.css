@@ -23,7 +23,7 @@ h2 {
     margin-bottom: 10px;
 }
 
-body {
+body, settings-container {
     color: white;
     display: flex;
     font-family: SNPro;
@@ -31,13 +31,30 @@ body {
     place-items: center;
 }
 
+settings-container {
+    padding-bottom: 20px;
+}
+
+footer {
+    background-color: #1C1C1C;
+    margin: 0;
+    padding: 10px;
+    display: block;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: smaller;
+    color: #A1A1A1;
+    text-align: left;
+    width: 90vw;
+}
+
 select {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 canvas {
-    width:640px;
-    height:360px;
+    aspect-ratio: 16 / 9;
+    width: min(90vw, 640px);
+    height: auto;
     background-color:black;
 }
 
@@ -47,8 +64,8 @@ settings {
     font-family: SNPro;
     background-color: #314778;
     color: white;
-    width: 500px;
-    height: 300px;
+    aspect-ratio: 5 / 3;
+    width: max(300, 45vw);
 }
 
 settings button {
@@ -58,6 +75,7 @@ settings button {
     font-size: 18px;
     font-weight: bold;
     padding: 10px 20px 10px 20px;
+    width: 50%;
 }
 
 settings select {
@@ -65,8 +83,9 @@ settings select {
     background-color: #16264a;
     color: white;
     padding: 5px;
-    font-size: 14px;
+    font-size: 13px;
     outline-color: black;
+    width: 50%;
 }
 
 settings code {
@@ -76,12 +95,14 @@ settings code {
     font-family: 'Courier New', Courier, monospace;
     background-color: black;
     color: white;
+    width: 100%;
 }
 
 settings input[type='file'] {
     background-color: #16264a;
     font-family: SNPro;
     width: 250px;
+    width: 50%;
 }
 
 #tempDL {
