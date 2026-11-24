@@ -20,6 +20,7 @@ export class AJTDDStyle extends Style
         this.addUnityFunctionByDropdownValue(this.rightDropdown, 'change', 'AJTDD', 'ChangeRightCutIn');
 
         // Radios
+        this.addFormatFunctionByRadioValue(this.formatRadio, 'change');
         this.addUnityFunctionByRadioValue(this.sizeRadio, 'change', 'AJTDD/Render', 'ChangeSize');
         this.addUnityFunctionByRadioValue(this.fpsRadio, 'change', 'AJTDD/Render', 'ChangeFPS');
        

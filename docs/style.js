@@ -1,3 +1,4 @@
+// ts-check
 export class Style {
     styleId = "";
     container = document.createElement('settings');
@@ -6,6 +7,7 @@ export class Style {
     renderInfo = [];
 
     // editor
+    formatRadio;
     sizeRadio;
     fpsRadio;
     previewButton;
@@ -27,6 +29,10 @@ export class Style {
         this.styleId = id;
 
         //#region [ EDITOR ]
+            // Size Radio
+            this.formatRadio = this.createRadio('format', ['webp', 'gif']);
+            this.editorInfo.push(this.formatRadio);            
+
             // Size Radio
             this.sizeRadio = this.createRadio('size', sizes);
             this.editorInfo.push(this.sizeRadio);
@@ -365,6 +371,31 @@ export class Style {
 
                 // @ts-ignore
                 window.gameInstance.SendMessage(gameObject, method, event.target.value);
+            }
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener(eventType, onEvent);
+        })
+    }
+
+    addFormatFunctionByRadioValue(element, eventType){
+        const radios = [];
+        for (var i = 0; i < element.childNodes.length; i++){
+            if (element.childNodes[i].type == 'radio'){
+                radios.push(element.childNodes[i]);
+            }
+        }
+
+        const onEvent = (event) => {
+            var checked = event.target.checked;
+
+            if (checked){
+                // console.log(method + " called with element " + event.target.type 
+                //         + " with id " + event.target.id + ". checked: " + checked);
+
+                // @ts-ignore
+                window.RenderListener.changeFormat(event.target.value);
             }
         }
 

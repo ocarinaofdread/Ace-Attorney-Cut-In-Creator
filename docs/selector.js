@@ -1,9 +1,11 @@
 import { AAICStyle } from './style_aaic.js';
 import { AJTDDStyle } from './style_ajtdd.js';
+import { DSStyle } from './style_ds.js';
 
 const AAIC = new AAICStyle;
 const AJTDD = new AJTDDStyle;
-const styles = [ AAIC, AJTDD ];
+const DS = new DSStyle;
+const styles = [ AAIC, AJTDD, DS ];
 var currentStyle ;
 
 const styleDropdown = document.getElementById("style");
@@ -20,6 +22,10 @@ const onStyleChange = () => {
         case "AJTDD":
             currentStyle = AJTDD;
             AJTDD.load();
+            break;
+        case "DS":
+            currentStyle = DS;
+            DS.load();
             break;
     }
 }
