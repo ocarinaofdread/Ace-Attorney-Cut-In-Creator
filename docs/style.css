@@ -1,11 +1,11 @@
 @font-face {
     font-family: SNPro;
-    src: url('./fonts/SNPro-Regular.ttf');
+    src: url('./fonts/SNProRegular.ttf');
 }
 
 @font-face {
     font-family: DFYeaSong;
-    src:url('./fonts/DFYeaSong-W9-WINP-BF-01.ttf');
+    src:url('./fonts/DFYeaSongW9WINPBF01.ttf');
 }
 
 html {
